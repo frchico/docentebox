@@ -13,7 +13,7 @@ Atualmente, o ecossistema é composto pelos seguintes módulos:
 ### 1. 🔒 J-Bunker (Java Sandbox Code Evaluator)
 Localizado na pasta `/j-bunker`, é um ambiente automatizado e altamente seguro baseado em Docker para compilação, isolamento e execução de projetos Spring Boot (Java 17, 21 e 25). Ele permite baixar repositórios do GitHub de alunos ou analisar códigos locais sem expor o sistema anfitrião.
 
-> 👉 *Para instruções detalhadas de uso e comandos, consulte o [README interno do J-Bunker](./j-bunker/README.md).*
+> 👉 *Para instruções detalhadas de uso e comandos, consulte o [README interno do J-Bunker](./j-bunker/readme.md).*
 
 ### 2. 📄 Templates e Diretrizes Académicas 
 
