@@ -1,6 +1,6 @@
-# 🧰 DocenteBox — Central de Ferramentas de Correção Educacional
+# 🧰 DocenteBox — Central de Ferramentas Educacionais
 
-O **DocenteBox** é um repositório desenvolvido para unificar scripts, utilitários, templates e automações voltadas à gestão de turmas, correção de avaliações e suporte à docência.
+O **DocenteBox** é um repositório desenvolvido por [frchico] para unificar scripts, utilitários, templates e automações voltadas à gestão de turmas, correção de avaliações e suporte à docência.
 
 Em vez de espalhar pequenos utilitários por várias pastas no computador, o DocenteBox organiza cada ferramenta em submódulos isolados e fáceis de manter.
 
@@ -37,3 +37,13 @@ Localizado na pasta `/templates-academicos`, este módulo centraliza as estrutur
 └── 📂 j-bunker/               # 🚀 Módulo J-Bunker (Sandbox Java)
 └── 📂 templates-academicos/   # 📄 Módulo de Documentos e Modelos
 ```
+
+
+
+---
+> [!Info]
+> ## 🤖 Nota de Transparência e Desenvolvimento
+> 
+> Este repositório, incluindo a arquitetura inicial dos scripts de automação do **J-Bunker** e a documentação dos arquivos `README.md`, foi estruturado e refinado com o auxílio de Inteligência Artificial (IA). 
+> 
+> A IA foi utilizada como copiloto de desenvolvimento para acelerar a formatação de manuais, otimizar a lógica de isolamento de containers e garantir as melhores práticas de organização de código para o ambiente docente.

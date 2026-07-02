@@ -1,7 +1,4 @@
-<!-- TOC -->autoauto- [🚀 J-Bunker](#🚀-j-bunker)auto	- [📋 Pré-requisitos do Sistema](#📋-pré-requisitos-do-sistema)auto	- [📂 Estrutura do Projeto](#📂-estrutura-do-projeto)auto	- [⚡ 1. Montagem do Cache (Executar uma única vez)](#⚡-1-montagem-do-cache-executar-uma-única-vez)auto	- [🎯 2. Como Testar o Projeto de um Aluno](#🎯-2-como-testar-o-projeto-de-um-aluno)auto		- [🌐 Cenário A: Baixando direto do GitHub do Aluno](#🌐-cenário-a-baixando-direto-do-github-do-aluno)auto		- [📂 Cenário B: Copiando os arquivos manualmente](#📂-cenário-b-copiando-os-arquivos-manualmente)auto	- [⚙️ Opções Avançadas](#⚙️-opções-avançadas)auto	- [🌍 Acessando a Aplicação Rodando](#🌍-acessando-a-aplicação-rodando)auto	- [🔒 Camada de Segurança Aplicada (Sandbox)](#🔒-camada-de-segurança-aplicada-sandbox)autoauto<!-- /TOC -->
-
 # 🚀 J-Bunker
-
 
 
 Ambiente automatizado e seguro em Docker para compilação, isolamento e testes de projetos de alunos em Java 17, 21 e 25 (usando Maven ou Gradle).
@@ -114,3 +111,11 @@ O container do aluno é executado sob as seguintes restrições em ambiente isol
 * Read-Only File System: O container não pode alterar arquivos internos do sistema (exceto a pasta `/tmp` que é limpa ao fechar).
 * Cap drop: Remoção de todas as permissões administrativas do Kernel (`--cap-drop=ALL`).
 * Isolamento de Imagem: A imagem Docker gerada usa o nome da pasta atual onde os scripts estão (ex: `sandbox-20261_prog1`). Um aluno sobrescreve o outro na execução padrão para proteger o espaço em disco do seu computador.
+
+---
+> [!Info]
+> ## 🤖 Nota de Transparência e Desenvolvimento
+> 
+> Este repositório, incluindo a arquitetura inicial dos scripts de automação do **J-Bunker** e a documentação dos arquivos `README.md`, foi estruturado e refinado com o auxílio de Inteligência Artificial (IA). 
+> 
+> A IA foi utilizada como copiloto de desenvolvimento para acelerar a formatação de manuais, otimizar a lógica de isolamento de containers e garantir as melhores práticas de organização de código para o ambiente docente.
