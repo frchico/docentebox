@@ -12,11 +12,11 @@ body:
     id: ferramenta
     attributes:
       label: 🛠️ Qual ferramenta receberá a melhoria?
-      description: Selecione a ferramenta correta da lista.
+      description: Selecione a ferramenta correta da lista. TDA = Templates e Diretrizes Acadêmicas
       options:
         - J-Bunker
-        - Templates e Diretrizes Acadêmicas - CADS 
-        - Templates e Diretrizes Acadêmicas - CBSI
+        - TDA - CADS 
+        - TDA - CBSI
         - Geral (Impacta todo o repositório)
     validations:
       required: true
@@ -36,6 +36,7 @@ body:
     attributes:
       label: 🤔 Qual problema essa ideia resolve? (Justificativa)
       description: Por que essa melhoria é útil no dia a dia?
-      placeholder: Ex: Atualmente o HD fica muito cheio após corrigir 40 alunos. A limpeza automatizada economizaria tempo.
+      placeholder: |
+        Ex: Atualmente o HD fica muito cheio após corrigir 40 alunos. A limpeza automatizada economizaria tempo.
     validations:
       required: true
