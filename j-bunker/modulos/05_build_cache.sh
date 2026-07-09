@@ -1,9 +1,11 @@
 #!/bin/bash
-export PASTA_APP_LOCAL="$PASTA_ALUNO_RAIZ/app"
+export PASTA_APP_LOCAL="$PASTA_ALUNO_LOCAL/app"
 
 if [ "$COMPILAR_NOVAMENTE" = "sim" ]; then
     echo "📦 Compilando o código..."
-    rm -rf "$PASTA_APP_LOCAL" && mkdir -p "$PASTA_APP_LOCAL"
+    # Limpa a pasta app antiga (se houver) e recria corretamente no caminho do aluno
+    rm -rf "$PASTA_APP_LOCAL" 2>/dev/null
+    mkdir -p "$PASTA_APP_LOCAL"
     mkdir -p "$DIRETORIOBASE/.cache_m2" "$DIRETORIOBASE/.cache_gradle"
 
     if [ "$BUILD_TOOL" = "maven" ]; then
@@ -17,7 +19,10 @@ if [ "$COMPILAR_NOVAMENTE" = "sim" ]; then
     fi
 
     JAR_GERADO=$(find "$PASTA_CODIGOS_LOCAL" -name "*.jar" ! -name "*-sources.jar" | head -n 1)
-    if [ -z "$JAR_GERADO" ]; then echo "❌ Arquivo JAR não encontrado!"; exit 1; fi
+    if [ -z "$JAR_GERADO" ]; then 
+        echo "❌ Arquivo JAR não encontrado! O build falhou."
+        exit 1
+    fi
 
     cp "$JAR_GERADO" "$PASTA_APP_LOCAL/app-aluno.jar"
 
