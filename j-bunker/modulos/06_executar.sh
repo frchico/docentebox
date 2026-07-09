@@ -23,7 +23,7 @@ CONTAINER_FINAL="executando-${IMAGEM_FINAL}"
 echo "🔥 Preparando o container da aplicação..."
 docker rm -f "$CONTAINER_FINAL" 2>/dev/null
 
-# 1. INICIA O CONTAINER EM SEGUNDO PLANO (Flag -d adicionada)
+# 1. INICIA O CONTAINER EM SEGUNDO PLANO
 docker run -d --rm \
   --name "$CONTAINER_FINAL" \
   -p "$PORTA_APP:$PORTA_APP" \
@@ -37,23 +37,30 @@ docker run -d --rm \
 
 echo "⏱️  Aguardando o Spring Boot iniciar na porta $PORTA_APP (Healthcheck)..."
 
-# 2. LOOP DE ESPERA INTELIGENTE
+# 2. LOOP DE ESPERA INTELIGENTE COM DETECÇÃO DE CRASH
 MAX_TENTATIVAS=20
 CONTADOR=0
 APP_PRONTO="nao"
 
 while [ $CONTADOR -lt $MAX_TENTATIVAS ]; do
-    # O curl tenta acessar a porta. Se der 'connection refused', o Spring ainda não subiu.
-    # Quando o Spring sobe, o curl retorna sucesso (mesmo que a página em si dê erro 404).
+    # Verifica se a porta já está respondendo
     if curl --output /dev/null --silent "http://localhost:$PORTA_APP"; then
         APP_PRONTO="sim"
         break
     fi
+    
+    # Verifica se o container "morreu" (crashou logo após subir)
+    STATUS_CONTAINER=$(docker inspect -f '{{.State.Running}}' "$CONTAINER_FINAL" 2>/dev/null)
+    if [ "$STATUS_CONTAINER" = "false" ]; then
+        echo -e "\n❌ Ops! O container foi encerrado inesperadamente."
+        break
+    fi
+
     sleep 2
     CONTADOR=$((CONTADOR+1))
 done
 
-# 3. RESULTADO DO HEALTHCHECK
+# 3. RESULTADO E EXPORTAÇÃO DO LOG DE ERROS
 if [ "$APP_PRONTO" = "sim" ]; then
     echo "--------------------------------------------------------"
     echo "✅ APLICAÇÃO ONLINE E PRONTA PARA USO!"
@@ -64,18 +71,29 @@ if [ "$APP_PRONTO" = "sim" ]; then
     echo ""
     echo "Para encerrar o teste, pressione CTRL+C nesta janela."
     echo "--------------------------------------------------------"
+    
+    # Armadilha para limpar o container rodando em background
+    trap 'echo -e "\n🛑 Encerrando o container de forma segura..."; docker stop "$CONTAINER_FINAL" >/dev/null 2>&1; exit 0' INT
+    
+    # Exibe os logs contínuos em caso de sucesso
+    docker logs -f "$CONTAINER_FINAL"
 else
     echo "--------------------------------------------------------"
-    echo "⚠️  Aviso: O tempo limite (40s) de espera foi atingido."
-    echo "A aplicação pode estar demorando mais que o normal para subir ou ocorreu um erro fatal."
-    echo "Exibindo os logs para análise:"
+    echo "⚠️  AVISO: Falha na inicialização da aplicação."
+    
+    # Salva o arquivo de log físico direto na pasta do app do aluno
+    ARQUIVO_ERRO="$PASTA_APP_LOCAL/erro_execucao.txt"
+    docker logs "$CONTAINER_FINAL" > "$ARQUIVO_ERRO" 2>&1
+    
+    echo "📄 Um arquivo com o log completo de falha foi exportado para o diretório local:"
+    echo "   -> $ARQUIVO_ERRO"
     echo "--------------------------------------------------------"
+    echo "🔍 Exibindo as últimas linhas do erro para análise rápida:"
+    echo ""
+    
+    # Exibe só o final do erro no terminal (não polui a tela toda)
+    docker logs --tail 20 "$CONTAINER_FINAL"
+    echo ""
+    echo "💡 O processo foi encerrado. Limpando a memória..."
+    docker rm -f "$CONTAINER_FINAL" 2>/dev/null
 fi
-
-# 4. ARMADILHA PARA O CTRL+C
-# Intercepta o CTRL+C do usuário para parar e limpar o container que ficou em segundo plano
-trap 'echo -e "\n🛑 Encerrando o container de forma segura..."; docker stop "$CONTAINER_FINAL" >/dev/null 2>&1; exit 0' INT
-
-# 5. ATRELA O TERMINAL AOS LOGS
-# Isso permite que você veja os logs do Spring Boot em tempo real, mantendo a experiência anterior.
-docker logs -f "$CONTAINER_FINAL"

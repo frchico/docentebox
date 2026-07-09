@@ -31,7 +31,7 @@ A arquitetura do projeto é modular, o que facilita a manutenção e execução 
 ├── 📂 apps/                   # Subpasta onde moram os projetos dos alunos
 │   └── 📂 nome_do_aluno/
 │       ├── 📂 codigos/        # Código-fonte (Clone do Git ou extração manual)
-│       └── 📂 app/            # JAR compilado e Dockerfile gerado
+│       └── 📂 app/            # JAR compilado, Dockerfile e logs de falha (erro_execucao.txt)
 ├── 📂 gerar_cache/            # Arquivos de templates para pré-carregar dependências
 │   ├── 📄 cache.pom.xml
 │   └── 📄 cache.build.gradle
@@ -105,10 +105,12 @@ Você pode passar chaves extras para customizar o comportamento do hardware, fer
 
 A porta exposta será definida dinamicamente com base no código do aluno. Caso o script não consiga detectar (e a flag de força não estiver ativa), você poderá digitar a porta manualmente.
 
-**Espera Inteligente (Healthcheck):** O script iniciará o container e aguardará silenciosamente até que o Spring Boot finalize o seu carregamento (evitando que você clique em um link antes da hora e encontre uma página de erro). Assim que a porta estiver pronta para responder, os atalhos de rede serão exibidos na tela:
+**Espera Inteligente (Healthcheck):** O script iniciará o container e aguardará silenciosamente até que o Spring Boot finalize o seu carregamento. Assim que a porta estiver pronta para responder, os atalhos de rede serão exibidos na tela:
 
 * 💻 **Aplicação Base:** `http://localhost:<PORTA_DETECTADA>`
 * 📑 **Documentação Swagger UI:** `http://localhost:<PORTA_DETECTADA>/swagger-ui/index.html`
+
+**Em caso de Falha (Crash):** Se o projeto compilar com sucesso, mas a aplicação encontrar um erro fatal ao tentar subir (como injeção de dependências incorreta, falha no banco de dados, etc.), o script detectará a queda do container automaticamente. O processo será abortado com segurança e um arquivo `erro_execucao.txt` será salvo na pasta do aluno, contendo o log completo para facilitar o seu feedback.
 
 Para encerrar o teste e limpar o ambiente em segundo plano liberando a porta para o próximo aluno, basta pressionar `CTRL + C` na janela do Git Bash.
 
@@ -128,4 +130,4 @@ O container do aluno é executado sob as seguintes restrições em ambiente isol
 > 
 > Este repositório, incluindo a arquitetura dos scripts modulares de automação do **J-Bunker** e a documentação deste `README.md`, foi estruturado e refinado com o auxílio de Inteligência Artificial (IA). 
 > 
-> A IA atuou como copiloto de desenvolvimento para acelerar a formatação de manuais, otimizar a lógica de detecção inteligente, implementação de healthchecks no terminal, isolamento de containers e garantir as melhores práticas de organização de código Bash para o ambiente docente.
+> A IA atuou como copiloto de desenvolvimento para acelerar a formatação de manuais, otimizar a lógica de detecção inteligente, implementação de healthchecks no terminal, captura automática de logs de erro, isolamento de containers e garantir as melhores práticas de organização de código Bash para o ambiente docente.
