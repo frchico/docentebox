@@ -119,7 +119,7 @@ O container do aluno é executado sob as seguintes restrições em ambiente isol
 * **Isolamento de Imagem:** A imagem Docker gerada usa o nome da pasta atual onde os scripts estão (ex: `sandbox-20261_prog1`). Um aluno sobrescreve o outro na execução padrão para proteger o espaço em disco do seu computador.
 
 ---
-> [!Info]
+> [!NOTE]
 > ## 🤖 Nota de Transparência e Desenvolvimento
 > 
 > Este repositório, incluindo a arquitetura dos scripts modulares de automação do **J-Bunker** e a documentação deste `README.md`, foi estruturado e refinado com o auxílio de Inteligência Artificial (IA). 
