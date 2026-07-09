@@ -9,3 +9,4 @@ if [ $? -ne 0 ]; then
     echo "--------------------------------------------------------"
     exit 1
 fi
+echo "✅ Docker pronto para uso."

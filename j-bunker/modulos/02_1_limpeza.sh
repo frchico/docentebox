@@ -37,7 +37,7 @@ if [ "$EXECUTAR_LIMPEZA" = "sim" ]; then
                     echo "🗑️ Apagando a imagem $IMAGEM..."
                     docker rmi -f "$IMAGEM" > /dev/null 2>&1
                 else
-                    echo "⏭️ Ignorando a imagem $IMAGEM..."
+                    echo "⏭️  Ignorando a imagem $IMAGEM..."
                 fi
             fi
         done
@@ -54,7 +54,6 @@ if [ "$EXECUTAR_LIMPEZA" = "sim" ]; then
     if [ ! -d "apps" ] || [ -z "$(ls -A apps/ 2>/dev/null)" ]; then
         echo "✨ Nenhuma pasta encontrada. Seu HD físico já está limpo!"
     else
-        # Pega apenas os diretórios dentro de apps/
         PASTAS_ALUNOS=$(ls -d apps/*/ 2>/dev/null)
         
         if [ -z "$PASTAS_ALUNOS" ]; then
@@ -85,18 +84,51 @@ if [ "$EXECUTAR_LIMPEZA" = "sim" ]; then
                         echo "🗑️ Apagando $NOME_PASTA..."
                         rm -rf "$PASTA"
                     else
-                        echo "⏭️ Ignorando $NOME_PASTA..."
+                        echo "⏭️  Ignorando $NOME_PASTA..."
                     fi
                 fi
             done
             echo "✅ Limpeza física das pastas concluída!"
         fi
     fi
+
+    echo ""
+
+    # ---------------------------------------------------
+    # 3. LIMPEZA DE CACHE DE COMPILAÇÃO (DOCKER BUILD BUILDERS)
+    # ---------------------------------------------------
+    echo "🔍 Verificando resíduos de cache de build do Docker..."
+    
+    # Captura o tamanho do cache antes de limpar utilizando formatação nativa do Docker
+    TAMANHO_CACHE_ANTES=$(docker system df --format "{{.Type}} {{.Size}}" | grep "Build Cache" | awk '{print $3}')
+    [ -z "$TAMANHO_CACHE_ANTES" ] && TAMANHO_CACHE_ANTES="0B"
+
+    echo "📊 Espaço atualmente ocupado pelo cache de build: $TAMANHO_CACHE_ANTES"
+    echo ""
+
+    if [ "$FORCAR_SUBSTITUICAO" = "sim" ]; then
+        CONFIRMACAO_CACHE="s"
+        echo "⚡ Flag --force detectada. Liberando cache de build automaticamente..."
+    else
+        read -p "Deseja libertar este cache de build acumulado? (s/N): " CONFIRMACAO_CACHE
+        CONFIRMACAO_CACHE=${CONFIRMACAO_CACHE:-n}
+    fi
+	if [[ "$CONFIRMACAO_CACHE" =~ ^[sS]$ ]]; then
+        echo "🗑️  Limpando TODO o cache do Docker Builder (BuildKit)..."
+        docker builder prune -a -f > /dev/null 2>&1
+        
+        # Limpa também o histórico visual (os "recibos" na aba Builds do Docker Desktop)
+        # O || true garante que o script não quebre caso você use uma versão mais antiga do Docker
+        docker buildx history rm --all > /dev/null 2>&1 || true
+
+        echo "✅ Cache de build e histórico libertados com sucesso! (~$TAMANHO_CACHE_ANTES recuperados)"
+    else
+        echo "⏭️  Mantendo o cache de build atual."
+    fi
     
     echo "========================================="
     echo "🎉 Processo de manutenção finalizado."
     echo "========================================="
     
-    # Sai do script principal, pois a intenção era apenas fazer a manutenção
     exit 0
 fi
