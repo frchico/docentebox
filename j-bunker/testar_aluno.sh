@@ -7,6 +7,7 @@ echo "=== 🚀 Iniciando Sistema de Testes ==="
 
 source "$DIRETORIOBASE/modulos/01_docker.sh"
 source "$DIRETORIOBASE/modulos/02_parametros.sh" "$@"
+source "$DIRETORIOBASE/modulos/02_1_limpeza.sh"
 source "$DIRETORIOBASE/modulos/02_5_aquecimento.sh"
 source "$DIRETORIOBASE/modulos/03_git_local.sh"
 source "$DIRETORIOBASE/modulos/04_analise.sh"

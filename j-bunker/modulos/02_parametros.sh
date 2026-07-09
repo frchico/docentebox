@@ -3,6 +3,7 @@ export MEMORIA_CONTAINER="2g"
 export CPUS_CONTAINER="4"
 export FORCAR_SUBSTITUICAO="nao"
 export AQUECER_CACHE="nao"
+export EXECUTAR_LIMPEZA="nao"
 export PARAMETRO=""
 export ARG_OPCIONAL=""
 
@@ -14,6 +15,10 @@ while [ "$#" -gt 0 ]; do
             ;;
         --cache|/cache|-c) 
             AQUECER_CACHE="sim"
+            shift 
+            ;;
+        --clean|/clean|-clean)
+            EXECUTAR_LIMPEZA="sim"
             shift 
             ;;
         -mem|--mem)
@@ -45,9 +50,8 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-# Se a flag de cache foi passada e não há parâmetros de aluno, 
-# permite rodar apenas o aquecimento e sair sem erro.
-if [ -z "$PARAMETRO" ] && [ "$AQUECER_CACHE" = "nao" ]; then
+# Verifica se o usuário rodou o script vazio (sem pasta de aluno, sem pedir cache e sem pedir clean)
+if [ -z "$PARAMETRO" ] && [ "$AQUECER_CACHE" = "nao" ] && [ "$EXECUTAR_LIMPEZA" = "nao" ]; then
     echo "Uso:"
     echo "  Por pasta: ./testar_aluno.sh <nome_pasta> [opções]"
     echo "  Por GitHub: ./testar_aluno.sh <URL_GitHub> [nome_pasta] [opções]"
@@ -58,6 +62,7 @@ if [ -z "$PARAMETRO" ] && [ "$AQUECER_CACHE" = "nao" ]; then
     echo "  --cpu <valor>       Define a quantidade de CPUs do container (Padrão: 4. Ex: --cpu 2)"
     echo ""
     echo "Opções Especiais:"
-    echo "  --cache ou /cache   Aquece os caches globais do Maven e Gradle."
+    echo "  -c, --cache         Aquece os caches globais do Maven e Gradle."
+    echo "  --clean             Remove imagens antigas (perguntará antes de apagar, use -f para forçar)."
     exit 1
 fi
