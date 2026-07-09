@@ -1,26 +1,34 @@
 #!/bin/bash
-if [ ! -f "$PASTA_CODIGOS_LOCAL/pom.xml" ] && [ ! -f "$PASTA_CODIGOS_LOCAL/build.gradle" ]; then
-    echo "❌ Erro: Nenhum arquivo de compilação encontrado."
+export PASTA_ANALISE="$PASTA_CODIGOS_LOCAL"
+
+# Se o usuário passou a flag --path, injetamos a subpasta no caminho
+if [ -n "$SUBDIRETORIO_APP" ]; then
+    PASTA_ANALISE="$PASTA_CODIGOS_LOCAL/$SUBDIRETORIO_APP"
+    echo "📂 Buscando projeto no subdiretório: $SUBDIRETORIO_APP"
+fi
+
+if [ ! -f "$PASTA_ANALISE/pom.xml" ] && [ ! -f "$PASTA_ANALISE/build.gradle" ]; then
+    echo "❌ Erro: Nenhum arquivo de compilação encontrado em: $PASTA_ANALISE"
     exit 1
 fi
 
 export JAVA_VERSION="17"
 export BUILD_TOOL="maven"
 
-if [ -f "$PASTA_CODIGOS_LOCAL/pom.xml" ]; then
-    VERSOES_DETECTADAS=$(grep -oP '(?<=<java.version>)[0-9]+' "$PASTA_CODIGOS_LOCAL/pom.xml" | head -n 1)
+if [ -f "$PASTA_ANALISE/pom.xml" ]; then
+    VERSOES_DETECTADAS=$(grep -oP '(?<=<java.version>)[0-9]+' "$PASTA_ANALISE/pom.xml" | head -n 1)
     if [ -n "$VERSOES_DETECTADAS" ]; then JAVA_VERSION=$VERSOES_DETECTADAS; fi
 else
     BUILD_TOOL="gradle"
-    VERSOES_DETECTADAS=$(grep -oE "compatibility.*[0-9]+|languageVersion.*[0-9]+" "$PASTA_CODIGOS_LOCAL/build.gradle"* 2>/dev/null | grep -oE "[0-9]+" | head -n 1)
+    VERSOES_DETECTADAS=$(grep -oE "compatibility.*[0-9]+|languageVersion.*[0-9]+" "$PASTA_ANALISE/build.gradle"* 2>/dev/null | grep -oE "[0-9]+" | head -n 1)
     if [ -n "$VERSOES_DETECTADAS" ]; then JAVA_VERSION=$VERSOES_DETECTADAS; fi
 fi
 
 echo "🔍 Detectado: Java $JAVA_VERSION usando $BUILD_TOOL"
 
 export PORTA_APP=""
-ARQUIVO_PROPERTIES="$PASTA_CODIGOS_LOCAL/src/main/resources/application.properties"
-ARQUIVO_YML="$PASTA_CODIGOS_LOCAL/src/main/resources/application.yml"
+ARQUIVO_PROPERTIES="$PASTA_ANALISE/src/main/resources/application.properties"
+ARQUIVO_YML="$PASTA_ANALISE/src/main/resources/application.yml"
 
 if [ -f "$ARQUIVO_PROPERTIES" ]; then
     PORTA_DETECTADA=$(grep -E '^\s*server\.port\s*=' "$ARQUIVO_PROPERTIES" | cut -d'=' -f2 | tr -d '[:space:]' | tr -d '\r')

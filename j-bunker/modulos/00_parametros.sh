@@ -6,8 +6,8 @@ export AQUECER_CACHE="nao"
 export EXECUTAR_LIMPEZA="nao"
 export PARAMETRO=""
 export ARG_OPCIONAL=""
+export SUBDIRETORIO_APP=""
 
-# Função dedicada para exibir o manual na tela
 exibir_ajuda() {
     echo "Uso:"
     echo "  Por pasta: ./testar_aluno.sh <nome_pasta> [opções]"
@@ -17,6 +17,7 @@ exibir_ajuda() {
     echo "  -f, --force         Força a atualização e compilação completa sem fazer perguntas."
     echo "  --mem <valor>       Define a memória do container (Padrão: 2g. Ex: --mem 4g)"
     echo "  --cpu <valor>       Define a quantidade de CPUs do container (Padrão: 4. Ex: --cpu 2)"
+    echo "  --buildpath <pasta> Define um subdiretório como raiz para o build (Ex: --buildpath backend)"
     echo ""
     echo "Opções Especiais:"
     echo "  -h, --help          Exibe este menu de ajuda."
@@ -28,7 +29,7 @@ while [ "$#" -gt 0 ]; do
     case "$1" in
         -h|--help|/h|/\?)
             exibir_ajuda
-            exit 0 # Encerra o script com sucesso (sem rodar o resto)
+            exit 0
             ;;
         -f|--force) 
             FORCAR_SUBSTITUICAO="sim"
@@ -60,6 +61,15 @@ while [ "$#" -gt 0 ]; do
                 exit 1
             fi 
             ;;
+        --buildpath|-buildpath)
+            if [ -n "$2" ]; then 
+                SUBDIRETORIO_APP="$2"
+                shift 2
+            else 
+                echo "❌ Erro: o parâmetro --buildpath exige um valor (Ex: --buildpath backend)"
+                exit 1
+            fi 
+            ;;
         *)
             if [ -z "$PARAMETRO" ]; then 
                 PARAMETRO="$1"
@@ -71,8 +81,7 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-# Verifica se o usuário rodou o script vazio (sem parâmetros)
 if [ -z "$PARAMETRO" ] && [ "$AQUECER_CACHE" = "nao" ] && [ "$EXECUTAR_LIMPEZA" = "nao" ]; then
     exibir_ajuda
-    exit 1 # Encerra com erro de sintaxe, já que não passou dados
+    exit 1
 fi
