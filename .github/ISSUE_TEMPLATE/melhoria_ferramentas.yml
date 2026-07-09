@@ -1,0 +1,41 @@
+name: 💡 Nova Melhoria ou Funcionalidade (Feature)
+description: Sugira uma nova ideia, comando ou ajuste para as ferramentas do repositório.
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por dedicar um tempo para sugerir uma melhoria! Preencha o formulário abaixo para registrar a sua ideia.
+
+  - type: dropdown
+    id: ferramenta
+    attributes:
+      label: 🛠️ Qual ferramenta receberá a melhoria?
+      description: Selecione a ferramenta correta da lista.
+      options:
+        - J-Bunker
+        - Templates e Diretrizes Acadêmicas - CADS 
+        - Templates e Diretrizes Acadêmicas - CBSI
+        - Geral (Impacta todo o repositório)
+    validations:
+      required: true
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: 📝 Descrição da Melhoria
+      description: O que você sugere que seja adicionado ou alterado? Descreva como a ferramenta deve se comportar.
+      placeholder: |
+        Ex: Adicionar a flag --clean no J-Bunker para limpar imagens antigas com o prefixo sandbox-.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problema
+    attributes:
+      label: 🤔 Qual problema essa ideia resolve? (Justificativa)
+      description: Por que essa melhoria é útil no dia a dia?
+      placeholder: Ex: Atualmente o HD fica muito cheio após corrigir 40 alunos. A limpeza automatizada economizaria tempo.
+    validations:
+      required: true
