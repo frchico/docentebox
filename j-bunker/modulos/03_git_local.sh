@@ -106,3 +106,9 @@ else
         fi
     fi
 fi
+
+# =========================================================
+# GARANTIA DE ESTRUTURA
+# Impede que o Docker crie o volume 'app/' como root
+# =========================================================
+mkdir -p "$PASTA_APP_LOCAL"
