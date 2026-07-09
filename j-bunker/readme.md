@@ -67,7 +67,7 @@ O script `testar_aluno.sh` é inteligente: ele detecta a ferramenta de build (Ma
 O script clona o repositório automaticamente para dentro da pasta `apps/`:
 
 ```sh
-./testar_aluno.sh https://github.com/usuario/projeto-aluno.git
+./testar_aluno.sh [https://github.com/usuario/projeto-aluno.git](https://github.com/usuario/projeto-aluno.git)
 ```
 
 Se rodar o comando novamente para o mesmo aluno, ele perguntará interativamente se você deseja atualizar o código. Confirmando, ele faz um `git fetch` e `git reset --hard` instantâneo. Se recusar, ele mantém o código local atual e prossegue.
@@ -101,12 +101,14 @@ Você pode passar chaves extras para customizar o comportamento do hardware, fer
 
 ## 🌍 Acessando a Aplicação Rodando
 
-A porta exposta será definida dinamicamente com base no código do aluno. Caso o script não consiga detectar (e a flag de força não estiver ativa), você poderá digitar a porta manualmente. Assim que o container subir com sucesso, os atalhos de rede serão exibidos na tela:
+A porta exposta será definida dinamicamente com base no código do aluno. Caso o script não consiga detectar (e a flag de força não estiver ativa), você poderá digitar a porta manualmente.
+
+**Espera Inteligente (Healthcheck):** O script iniciará o container e aguardará silenciosamente até que o Spring Boot finalize o seu carregamento (evitando que você clique em um link antes da hora e encontre uma página de erro). Assim que a porta estiver pronta para responder, os atalhos de rede serão exibidos na tela:
 
 * 💻 **Aplicação Base:** `http://localhost:<PORTA_DETECTADA>`
 * 📑 **Documentação Swagger UI:** `http://localhost:<PORTA_DETECTADA>/swagger-ui/index.html`
 
-Para encerrar o teste e liberar a porta para o próximo aluno, basta pressionar `CTRL + C` na janela do Git Bash.
+Para encerrar o teste e limpar o ambiente em segundo plano liberando a porta para o próximo aluno, basta pressionar `CTRL + C` na janela do Git Bash.
 
 ---
 
@@ -119,9 +121,9 @@ O container do aluno é executado sob as seguintes restrições em ambiente isol
 * **Isolamento de Imagem:** A imagem Docker gerada usa o nome da pasta atual onde os scripts estão (ex: `sandbox-20261_prog1`). Um aluno sobrescreve o outro na execução padrão para proteger o espaço em disco do seu computador.
 
 ---
-> [!NOTE]
+> [!Info]
 > ## 🤖 Nota de Transparência e Desenvolvimento
 > 
 > Este repositório, incluindo a arquitetura dos scripts modulares de automação do **J-Bunker** e a documentação deste `README.md`, foi estruturado e refinado com o auxílio de Inteligência Artificial (IA). 
 > 
-> A IA atuou como copiloto de desenvolvimento para acelerar a formatação de manuais, otimizar a lógica de detecção inteligente, isolamento de containers e garantir as melhores práticas de organização de código Bash para o ambiente docente.
+> A IA atuou como copiloto de desenvolvimento para acelerar a formatação de manuais, otimizar a lógica de detecção inteligente, implementação de healthchecks no terminal, isolamento de containers e garantir as melhores práticas de organização de código Bash para o ambiente docente.
