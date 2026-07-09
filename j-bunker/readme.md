@@ -36,14 +36,15 @@ A arquitetura do projeto é modular, o que facilita a manutenção e execução 
 │   ├── 📄 cache.pom.xml
 │   └── 📄 cache.build.gradle
 ├── 📂 modulos/                # Componentes modulares do orquestrador
+│   ├── 📄 00_parametros.sh
 │   ├── 📄 01_docker.sh
-│   ├── 📄 02_parametros.sh
 │   ├── 📄 02_1_limpeza.sh
 │   ├── 📄 02_5_aquecimento.sh
 │   ├── 📄 03_git_local.sh
 │   ├── 📄 04_analise.sh
 │   ├── 📄 05_build_cache.sh
-│   └── 📄 06_executar.sh
+│   ├── 📄 06_executar.sh
+│   └── 📄 07_encerramento.sh
 └── 📄 testar_aluno.sh         # Orquestrador principal da Sandbox
 ```
 
@@ -90,6 +91,7 @@ Você pode passar chaves extras para customizar o comportamento do hardware, fer
 
 | Flag / Opção              | Descrição                                                                                                                                                                       | Exemplo de Uso                                                  |
 | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------- |
+| `-h`, `--help`            | Exibe o menu de ajuda e instruções de uso no terminal sem iniciar o ambiente.                                                                                                   | `./testar_aluno.sh --help`                                      |
 | `-c`, `--cache`, `/cache` | Dispara o módulo isolado de aquecimento dos caches globais do Maven e Gradle.                                                                                                   | `./testar_aluno.sh -c`                                          |
 | `--clean`, `/clean`       | Remove imagens antigas acumuladas no Docker e apaga pastas locais em `apps/`. O processo é interativo, permitindo confirmar item a item ou usar o atalho `t` para varrer todas. | `./testar_aluno.sh --clean`                                     |
 | `-f`, `--force`           | Force: Pula perguntas de Git, substituição, porta e **confirmações de limpeza**, forçando a ação imediata.                                                                      | `./testar_aluno.sh aluno1 -f`<br>`./testar_aluno.sh --clean -f` |
@@ -110,9 +112,9 @@ A porta exposta será definida dinamicamente com base no código do aluno. Caso 
 * 💻 **Aplicação Base:** `http://localhost:<PORTA_DETECTADA>`
 * 📑 **Documentação Swagger UI:** `http://localhost:<PORTA_DETECTADA>/swagger-ui/index.html`
 
-**Em caso de Falha (Crash):** Se o projeto compilar com sucesso, mas a aplicação encontrar um erro fatal ao tentar subir (como injeção de dependências incorreta, falha no banco de dados, etc.), o script detectará a queda do container automaticamente. O processo será abortado com segurança e um arquivo `erro_execucao.txt` será salvo na pasta do aluno, contendo o log completo para facilitar o seu feedback.
+**Em caso de Falha (Crash):** Se o projeto compilar com sucesso, mas a aplicação encontrar um erro fatal ao tentar subir, o script detectará a queda do container automaticamente. O processo será abortado com segurança e um arquivo `erro_execucao.txt` será salvo na pasta do aluno com o log completo.
 
-Para encerrar o teste e limpar o ambiente em segundo plano liberando a porta para o próximo aluno, basta pressionar `CTRL + C` na janela do Git Bash.
+**Encerramento do Teste:** Para fechar o ambiente, basta pressionar `CTRL + C` na janela do Git Bash. O container em segundo plano será encerrado e a porta liberada. Em seguida, o script perguntará interativamente se você deseja excluir a pasta física daquele aluno (`apps/nome_do_aluno`) imediatamente para poupar espaço em disco. Se a flag de força `-f` estiver ligada, a pasta é preservada e o prompt é omitido.
 
 ---
 

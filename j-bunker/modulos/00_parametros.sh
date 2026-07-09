@@ -7,8 +7,29 @@ export EXECUTAR_LIMPEZA="nao"
 export PARAMETRO=""
 export ARG_OPCIONAL=""
 
+# Função dedicada para exibir o manual na tela
+exibir_ajuda() {
+    echo "Uso:"
+    echo "  Por pasta: ./testar_aluno.sh <nome_pasta> [opções]"
+    echo "  Por GitHub: ./testar_aluno.sh <URL_GitHub> [nome_pasta] [opções]"
+    echo ""
+    echo "Opções:"
+    echo "  -f, --force         Força a atualização e compilação completa sem fazer perguntas."
+    echo "  --mem <valor>       Define a memória do container (Padrão: 2g. Ex: --mem 4g)"
+    echo "  --cpu <valor>       Define a quantidade de CPUs do container (Padrão: 4. Ex: --cpu 2)"
+    echo ""
+    echo "Opções Especiais:"
+    echo "  -h, --help          Exibe este menu de ajuda."
+    echo "  -c, --cache         Aquece os caches globais do Maven e Gradle."
+    echo "  --clean             Remove imagens antigas e pastas locais (perguntará antes de apagar, use -f para forçar)."
+}
+
 while [ "$#" -gt 0 ]; do
     case "$1" in
+        -h|--help|/h|/\?)
+            exibir_ajuda
+            exit 0 # Encerra o script com sucesso (sem rodar o resto)
+            ;;
         -f|--force) 
             FORCAR_SUBSTITUICAO="sim"
             shift 
@@ -50,19 +71,8 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-# Verifica se o usuário rodou o script vazio (sem pasta de aluno, sem pedir cache e sem pedir clean)
+# Verifica se o usuário rodou o script vazio (sem parâmetros)
 if [ -z "$PARAMETRO" ] && [ "$AQUECER_CACHE" = "nao" ] && [ "$EXECUTAR_LIMPEZA" = "nao" ]; then
-    echo "Uso:"
-    echo "  Por pasta: ./testar_aluno.sh <nome_pasta> [opções]"
-    echo "  Por GitHub: ./testar_aluno.sh <URL_GitHub> [nome_pasta] [opções]"
-    echo ""
-    echo "Opções:"
-    echo "  -f, --force         Força a atualização e compilação completa sem fazer perguntas."
-    echo "  --mem <valor>       Define a memória do container (Padrão: 2g. Ex: --mem 4g)"
-    echo "  --cpu <valor>       Define a quantidade de CPUs do container (Padrão: 4. Ex: --cpu 2)"
-    echo ""
-    echo "Opções Especiais:"
-    echo "  -c, --cache         Aquece os caches globais do Maven e Gradle."
-    echo "  --clean             Remove imagens antigas (perguntará antes de apagar, use -f para forçar)."
-    exit 1
+    exibir_ajuda
+    exit 1 # Encerra com erro de sintaxe, já que não passou dados
 fi
