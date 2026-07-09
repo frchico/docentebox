@@ -88,13 +88,13 @@ Se você já tem a pasta do aluno no seu computador:
 
 Você pode passar chaves extras para customizar o comportamento do hardware, ferramentas e o fluxo do terminal:
 
-| Flag / Opção              | Descrição                                                                                                                                                  | Exemplo de Uso                                                  |
-| :------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------- |
-| `-c`, `--cache`, `/cache` | Dispara o módulo isolado de aquecimento dos caches globais do Maven e Gradle.                                                                              | `./testar_aluno.sh -c`                                          |
-| `--clean`, `/clean`       | Busca e remove todas as imagens antigas do J-Bunker acumuladas no Docker para liberar espaço no disco. Exibe uma confirmação de segurança antes de apagar. | `./testar_aluno.sh --clean`                                     |
-| `-f`, `--force`           | Force: Pula perguntas de Git, substituição, porta e **confirmação de limpeza**, forçando a ação imediata.                                                  | `./testar_aluno.sh aluno1 -f`<br>`./testar_aluno.sh --clean -f` |
-| `-mem`, `--mem`           | Customiza o limite de memória RAM do container (Padrão: 2g).                                                                                               | `./testar_aluno.sh aluno1 --mem 4g`                             |
-| `-cpu`, `--cpu`           | Customiza a quantidade de núcleos de CPU alocados (Padrão: 4).                                                                                             | `./testar_aluno.sh aluno1 --cpu 2`                              |
+| Flag / Opção              | Descrição                                                                                                                                                                       | Exemplo de Uso                                                  |
+| :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------- |
+| `-c`, `--cache`, `/cache` | Dispara o módulo isolado de aquecimento dos caches globais do Maven e Gradle.                                                                                                   | `./testar_aluno.sh -c`                                          |
+| `--clean`, `/clean`       | Remove imagens antigas acumuladas no Docker e apaga pastas locais em `apps/`. O processo é interativo, permitindo confirmar item a item ou usar o atalho `t` para varrer todas. | `./testar_aluno.sh --clean`                                     |
+| `-f`, `--force`           | Force: Pula perguntas de Git, substituição, porta e **confirmações de limpeza**, forçando a ação imediata.                                                                      | `./testar_aluno.sh aluno1 -f`<br>`./testar_aluno.sh --clean -f` |
+| `-mem`, `--mem`           | Customiza o limite de memória RAM do container (Padrão: 2g).                                                                                                                    | `./testar_aluno.sh aluno1 --mem 4g`                             |
+| `-cpu`, `--cpu`           | Customiza a quantidade de núcleos de CPU alocados (Padrão: 4).                                                                                                                  | `./testar_aluno.sh aluno1 --cpu 2`                              |
 
 **Exemplo combinando tudo:**
 `./testar_aluno.sh https://github.com/aluno/projeto.git --force --mem 1g --cpu 2`
