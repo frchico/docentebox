@@ -206,6 +206,45 @@ fi
 
 echo "🔍 Detectado: Ambiente Spring Boot rodando em Java $JAVA_VERSION usando $BUILD_TOOL"
 
+# 2.5. DETECÇÃO DA PORTA DO APLICATIVO
+PORTA_APP=""
+ARQUIVO_PROPERTIES="$PASTA_CODIGOS_LOCAL/src/main/resources/application.properties"
+ARQUIVO_YML="$PASTA_CODIGOS_LOCAL/src/main/resources/application.yml"
+
+echo "🔍 Buscando configuração de porta no projeto..."
+
+if [ -f "$ARQUIVO_PROPERTIES" ]; then
+    PORTA_DETECTADA=$(grep -E '^\s*server\.port\s*=' "$ARQUIVO_PROPERTIES" | cut -d'=' -f2 | tr -d '[:space:]' | tr -d '\r')
+    if [ -n "$PORTA_DETECTADA" ] && [[ "$PORTA_DETECTADA" =~ ^[0-9]+$ ]]; then
+        PORTA_APP="$PORTA_DETECTADA"
+        echo "✅ Porta encontrada no application.properties: $PORTA_APP"
+    fi
+elif [ -f "$ARQUIVO_YML" ]; then
+    # Busca básica no YAML (caso o aluno use yaml ao invés de properties)
+    PORTA_DETECTADA=$(grep -E '^\s*port\s*:\s*[0-9]+' "$ARQUIVO_YML" | head -n 1 | cut -d':' -f2 | tr -d '[:space:]' | tr -d '\r')
+    if [ -n "$PORTA_DETECTADA" ] && [[ "$PORTA_DETECTADA" =~ ^[0-9]+$ ]]; then
+        PORTA_APP="$PORTA_DETECTADA"
+        echo "✅ Porta encontrada no application.yml: $PORTA_APP"
+    fi
+fi
+
+# Fallback se não encontrou a porta
+if [ -z "$PORTA_APP" ]; then
+    PORTA_APP="8080" # Valor padrão
+    if [ "$FORCAR_SUBSTITUICAO" = "sim" ]; then
+        echo "ℹ️  Porta não detectada. Modo forçado (-f) ativo: usando porta $PORTA_APP."
+    else
+        echo "⚠️  Não foi possível detectar a porta (server.port) automaticamente."
+        if read -t 15 -r -p "Digite a porta que o app usa (Ex: 8081) [Padrão: 8080]: " RESP_PORTA; then
+            if [[ "$RESP_PORTA" =~ ^[0-9]+$ ]]; then
+                PORTA_APP="$RESP_PORTA"
+            fi
+        fi
+    fi
+fi
+echo "🚀 A aplicação será exposta na porta: $PORTA_APP"
+echo ""
+
 # 3. COMPILAÇÃO DINÂMICA
 if [ "$COMPILAR_NOVAMENTE" = "sim" ]; then
     echo "📦 Compilando o código do aluno..."
@@ -254,7 +293,7 @@ RUN addgroup -S sandboxgroup && adduser -S sandboxuser -G sandboxgroup
 WORKDIR /app
 COPY --chown=sandboxuser:sandboxgroup app-aluno.jar app.jar
 USER sandboxuser
-EXPOSE 8080
+EXPOSE ${PORTA_APP}
 CMD ["java", "-Djava.io.tmpdir=/tmp", "-jar", "app.jar"]
 EOF
 
@@ -290,11 +329,11 @@ fi
 CONTAINER_FINAL="executando-${IMAGEM_FINAL}"
 
 # 6. EXECUÇÃO DA SANDBOX SEGURA
-echo "🔥 Rodando a aplicação do aluno na porta 8080..."
+echo "🔥 Rodando a aplicação do aluno na porta $PORTA_APP..."
 echo "🚀 Recursos alocados: Memória: $MEMORIA_CONTAINER | CPUs: $CPUS_CONTAINER"
 echo ""
-echo "👉 Acesse a aplicação: http://localhost:8080"
-echo "👉 Documentação Swagger: http://localhost:8080/swagger-ui/index.html"
+echo "👉 Acesse a aplicação: http://localhost:$PORTA_APP"
+echo "👉 Documentação Swagger: http://localhost:$PORTA_APP/swagger-ui/index.html"
 echo ""
 echo "Para encerrar o teste, pressione CTRL+C nesta janela."
 echo "--------------------------------------------------------"
@@ -303,7 +342,8 @@ docker rm -f "$CONTAINER_FINAL" 2>/dev/null
 
 docker run --rm \
   --name "$CONTAINER_FINAL" \
-  -p 8080:8080 \
+  -p "$PORTA_APP:$PORTA_APP" \
+  -e SERVER_PORT="$PORTA_APP" \
   --memory="$MEMORIA_CONTAINER" \
   --cpus="$CPUS_CONTAINER" \
   --cap-drop=ALL \
